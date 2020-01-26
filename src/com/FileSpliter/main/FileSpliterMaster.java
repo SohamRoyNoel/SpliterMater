@@ -10,10 +10,10 @@ import java.time.Instant;
 public class FileSpliterMaster {
 
 //	public static void main(String[] args) throws IOException {
-	public void SpliterMan(String targetFileLocation, long numberOfSplitedFiles, int maxAllowedSize, String locationToStoreSplitedFiles, String splitedFileName, String format) throws IOException {
+	public void SpliterMan(String sourceFileLocation, long numberOfSplitedFiles, int maxAllowedSize, String locationToStoreSplitedFiles, String splitedFileName, String format) throws IOException {
 
 		Instant start = Instant.now();
-		RandomAccessFile raf = new RandomAccessFile(targetFileLocation, "r");
+		RandomAccessFile raf = new RandomAccessFile(sourceFileLocation, "r");
 		long numSplits = numberOfSplitedFiles; 
 		long sourceSize = raf.length();
 		long bytesPerSplit = sourceSize/numSplits ;
@@ -21,7 +21,7 @@ public class FileSpliterMaster {
 
 		int maxReadBufferSize = maxAllowedSize * 1024; //8KB
 		for(int destIx=1; destIx <= numSplits; destIx++) {
-			BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream("locationToStoreSplitedFiles"+"split."+destIx+"."+format));
+			BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(locationToStoreSplitedFiles+splitedFileName+"-"+destIx+"."+format));
 			if(bytesPerSplit > maxReadBufferSize) {
 				long numReads = bytesPerSplit/maxReadBufferSize;
 				long numRemainingRead = bytesPerSplit % maxReadBufferSize;
@@ -37,13 +37,13 @@ public class FileSpliterMaster {
 			bw.close();
 		}
 		if(remainingBytes > 0) {
-			BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(splitedFileName+"-"+(numSplits+1)));
+			BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(locationToStoreSplitedFiles+splitedFileName+"-"+(numSplits+1)+"."+format));
 			ReadMaster(raf, bw, remainingBytes);
 			bw.close();
 		}
 		raf.close();
 		Instant end = Instant.now();
-		System.out.println("Total Taken Time : " + Duration.between(start, end).toMinutes());
+		System.out.println("Total Taken Time : " + Duration.between(start, end).toMillis()+" Miliseconds");
 
 	}
 

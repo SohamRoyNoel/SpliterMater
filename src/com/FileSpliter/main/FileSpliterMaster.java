@@ -4,12 +4,15 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.time.Duration;
+import java.time.Instant;
 
 public class FileSpliterMaster {
 
 //	public static void main(String[] args) throws IOException {
 	public void SpliterMan(String targetFileLocation, long numberOfSplitedFiles, int maxAllowedSize, String locationToStoreSplitedFiles, String splitedFileName, String format) throws IOException {
 
+		Instant start = Instant.now();
 		RandomAccessFile raf = new RandomAccessFile(targetFileLocation, "r");
 		long numSplits = numberOfSplitedFiles; 
 		long sourceSize = raf.length();
@@ -39,6 +42,8 @@ public class FileSpliterMaster {
 			bw.close();
 		}
 		raf.close();
+		Instant end = Instant.now();
+		System.out.println("Total Taken Time : " + Duration.between(start, end).toMinutes());
 
 	}
 
